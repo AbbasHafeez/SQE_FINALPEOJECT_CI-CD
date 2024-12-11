@@ -1,10 +1,14 @@
-const request = require('supertest');
-const app = require('../src/index');
+const { app, server } = require('../src/index'); // Import both app and server
 const mockDb = require('../src/mockDB');
+const request = require('supertest');
 
 describe('Note-Taking App API', () => {
   beforeEach(() => {
     mockDb.reset(); // Reset the mock database before each test
+  });
+
+  afterAll(() => {
+    server.close(); // Close the server after all tests
   });
 
   test('should create a new note', async () => {
