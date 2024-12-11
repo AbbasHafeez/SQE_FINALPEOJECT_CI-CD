@@ -37,19 +37,22 @@ jobs:
 
     # Build Docker image
     - name: Build Docker image
-      run: docker build note-taking-app .
+      run: docker build -t note-taking-app .
 
-    # Push Docker image to GitHub Container Registry
-    - name: Push to GitHub Container Registry
+    # Log in to GitHub Container Registry
+    - name: Log in to GitHub Container Registry
       if: github.event_name == 'push'
       uses: docker/login-action@v2
       with:
         registry: ghcr.io
-        username: ${{ secrets.DOCKER_USERNAME }}  # Use the secret for username
-        password: ${{ secrets.DOCKER_TOKEN }}      # Use the secret for token/password
+        username: ${{ secrets.GITHUB_ACTOR }}  # Automatically use the GitHub actor's username
+        password: ${{ secrets.GITHUB_TOKEN }} # Use GitHub's default token for authentication
 
+    # Tag and Push Docker Image
     - name: Push Docker Image
       if: github.event_name == 'push'
       run: |
         docker tag note-taking-app ghcr.io/AbbasHafeez/note-taking-app:latest
         docker push ghcr.io/AbbasHafeez/note-taking-app:latest
+
+        
